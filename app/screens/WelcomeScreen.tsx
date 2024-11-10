@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Button, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { Animated, Button, Image, ImageStyle, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { Text, Screen } from "@/components"
 import { isRTL } from "../i18n"
 import { AppStackScreenProps } from "../navigators"
@@ -9,6 +9,7 @@ import { useAppTheme } from "@/utils/useAppTheme"
 import { router } from "expo-router"
 import { useNavigation } from '@react-navigation/native';
 import FeedScreen from "./feed"
+import { LinearGradient } from "expo-linear-gradient"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
@@ -46,7 +47,29 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = ({ navigation }) => {
 
       <View style={themed([$bottomContainer, $bottomContainerInsets])}>
 
-        <Button title="Go to Feed" onPress={handleNavigateToFeed} color="black"/>
+        {/* <Button title="Go to Feed" onPress={handleNavigateToFeed} color="black"/> */}
+        <TouchableOpacity 
+          style={$buttonContainer} 
+          onPress={handleNavigateToFeed}
+          activeOpacity={0.8}
+        >
+          <LinearGradient
+            colors={['#4F46E5', '#1E40AF', '#000000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={$gradient}
+          >
+            <Text style={$buttonText}>Go to Feed</Text>
+            <Animated.View
+              style={[
+                $shimmer,
+                // {
+                //   transform: [{ translateX }],
+                // },
+              ]}
+            />
+          </LinearGradient>
+        </TouchableOpacity>
 
       </View>
 
@@ -58,7 +81,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = ({ navigation }) => {
 const $topContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexShrink: 1,
   flexGrow: 1,
-  flexBasis: "57%",
+  flexBasis: "97%",
   justifyContent: "center",
   paddingHorizontal: spacing.lg,
 })
