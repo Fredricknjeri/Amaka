@@ -1,26 +1,34 @@
 import { FC } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { Button, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { Text, Screen } from "@/components"
 import { isRTL } from "../i18n"
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { router } from "expo-router"
+import { useNavigation } from '@react-navigation/native';
+import FeedScreen from "./feed"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
+const amakaImage = require("../../assets/images/images.png")
 
-interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
+interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> { }
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = () => {
+export const WelcomeScreen: FC<WelcomeScreenProps> = ({ navigation }) => {
   const { themed, theme } = useAppTheme()
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
+  const handleNavigateToFeed = () => {
+    navigation.navigate("Feed")
+  }
+
   return (
     <Screen preset="fixed">
       <View style={themed($topContainer)}>
-        <Image style={themed($welcomeLogo)} source={welcomeLogo} resizeMode="contain" />
+        <Image style={themed($welcomeLogo)} source={amakaImage} resizeMode="contain" />
         <Text
           testID="welcome-heading"
           style={themed($welcomeHeading)}
@@ -37,8 +45,12 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = () => {
       </View>
 
       <View style={themed([$bottomContainer, $bottomContainerInsets])}>
-        <Text tx="welcomeScreen:postscript" size="md" />
+
+        <Button title="Go to Feed" onPress={handleNavigateToFeed} color="black"/>
+
       </View>
+
+
     </Screen>
   )
 }
@@ -80,3 +92,46 @@ const $welcomeFace: ImageStyle = {
 const $welcomeHeading: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })
+
+// New style for the navigation button
+const $buttonContainer: ViewStyle = {
+  width: '100%',
+  height: 50,
+  borderRadius: 25,
+  overflow: 'hidden',
+  marginVertical: 20,
+  elevation: 5,
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+}
+
+const $gradient: ViewStyle = {
+  width: '100%',
+  height: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  position: 'relative',
+  overflow: 'hidden',
+}
+
+const $buttonText: TextStyle = {
+  color: 'white',
+  fontSize: 16,
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  letterSpacing: 1,
+}
+
+const $shimmer: ViewStyle = {
+  width: 100,
+  height: '100%',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  position: 'absolute',
+  transform: [{ skewX: '-20deg' }],
+}
