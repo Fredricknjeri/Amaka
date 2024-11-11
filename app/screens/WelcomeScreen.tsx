@@ -1,5 +1,5 @@
-import { FC } from "react"
-import { Animated, Button, Image, ImageStyle, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+import { FC, useEffect, useRef } from "react"
+import { Animated, Button, Easing, Image, ImageStyle, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { Text, Screen } from "@/components"
 import { isRTL } from "../i18n"
 import { AppStackScreenProps } from "../navigators"
@@ -21,10 +21,38 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = ({ navigation }) => {
   const { themed, theme } = useAppTheme()
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+  const shimmerValue = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    const startShimmerAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(shimmerValue, {
+            toValue: 1,
+            duration: 2000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shimmerValue, {
+            toValue: 0,
+            duration: 2000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start()
+    }
+
+    startShimmerAnimation()
+  }, [shimmerValue])
 
   const handleNavigateToFeed = () => {
     navigation.navigate("Feed")
   }
+  const animatedTranslateX = shimmerValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-200, 200],
+  })
 
   return (
     <Screen preset="fixed">
@@ -63,9 +91,9 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = ({ navigation }) => {
             <Animated.View
               style={[
                 $shimmer,
-                // {
-                //   transform: [{ translateX }],
-                // },
+                {
+                  transform: [{ translateX: animatedTranslateX }],
+                },
               ]}
             />
           </LinearGradient>
